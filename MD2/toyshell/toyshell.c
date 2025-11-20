@@ -41,6 +41,7 @@ void execute(char *arg[]) {
 
 void help(void){
     printf("Available commands:\n");
+    printf("  cd <dir>    - Change directory\n");
     printf("  env         - Show environment variables\n");
     printf("  exit        - Exit shell\n");
 }
@@ -50,9 +51,14 @@ int main(void) {
     char *cmdp;
     char *av[MAXARG];
     int i;
+    char cwd[1024];  
 
     while (1) {
+        if (getcwd(cwd, sizeof(cwd)) != NULL){
+            printf("[%s] $toyshell$> ", cwd);
+        } else {
         printf("$toyshell$> ");
+        }
         fgets(cmd, sizeof(cmd), stdin);
 
         if (strcmp(cmd, "env\n") == 0) {
@@ -67,7 +73,19 @@ int main(void) {
                 av[i] = strtok(cmdp, " \t\n");
                 cmdp = NULL;
             }
-            execute(av);
+            if(av[0] != NULL) {
+                if(strcmp(av[0], "cd") == 0) {
+                    if(av[1] == NULL) {
+                        printf("Error: missing argument for cd\n");
+                    } else {
+                        if(chdir(av[1]) != 0) {
+                            perror("cd failed");
+                        }
+                    }
+                }
+            } else {
+                execute(av);
+            }
         }
     }
     return (0);
