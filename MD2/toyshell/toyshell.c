@@ -39,6 +39,12 @@ void execute(char *arg[]) {
     }
 }
 
+void help(void){
+    printf("Available commands:\n");
+    printf("  env         - Show environment variables\n");
+    printf("  exit        - Exit shell\n");
+}
+
 int main(void) {
     char cmd[MAXLINE];
     char *cmdp;
@@ -53,6 +59,8 @@ int main(void) {
             env();
         } else if (strcmp(cmd, "exit\n") == 0) {
             exitsh(0);
+        } else if (strcmp(cmd, "help\n") == 0) {
+            help();
         } else {
             cmdp = cmd;
             for (i = 0; i < MAXARG; i++) {
